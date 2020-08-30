@@ -11,6 +11,8 @@ When the video file is called to be compressed, the library checks if the user w
 
 You can pass one of  3 video qualities; `.high`, `.medium`, or `.low` and the package will handle generating the right bitrate and size values for the output video.
 
+For a sample app, you can have a look at [LightCompressor_iOS_Sample](https://github.com/AbedElazizShe/LightCompressor_iOS_Sample).
+
 Usage
 --------
 To import this swift package to your XCode project follow the following;

@@ -19,13 +19,13 @@ public enum CompressionResult {
 public class Compression {
     public init() {}
     
-    var cancel = false
+    public var cancel = false
 }
 
 // Compression Error Messages
 public struct CompressionError: LocalizedError {
-    let title: String
-    let code: Int
+    public let title: String
+    public let code: Int
     
     init(title: String = "Compression Error", code: Int = -1) {
         self.title = title

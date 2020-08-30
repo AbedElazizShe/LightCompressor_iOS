@@ -17,6 +17,8 @@ public enum CompressionResult {
 
 // Compression Interruption Wrapper
 public class Compression {
+    public init() {}
+    
     var cancel = false
 }
 
@@ -33,35 +35,37 @@ public struct CompressionError: LocalizedError {
 
 public struct LightCompressor {
     
+    public init() {}
+    
     private let MIN_BITRATE = Float(2000000)
     private let MIN_HEIGHT = 640.0
     private let MIN_WIDTH = 360.0
     
     /**
-    * This function compresses a given [source] video file and writes the compressed video file at
-    * [destination]
-    *
-    * @param [source] the path of the provided video file to be compressed
-    * @param [destination] the path where the output compressed video file should be saved
-    * @param [quality] to allow choosing a video quality that can be [.low],
-    * [.medium], and [.high]. This defaults to [.medium]
-    * @param [isMinBitRateEnabled] to determine if the checking for a minimum bitrate threshold
-    * before compression is enabled or not. This default to `true`
-    * @param [keepOriginalResolution] to keep the original video height and width when compressing.
-    * This defaults to `false`
-    * @param [progressHandler] a compression progress  listener that listens to compression progress status
-    * @param [completion] to return completion status that can be [onStart], [onSuccess], [onFailure],
-    * and if the compression was [onCancelled]
-    */
+     * This function compresses a given [source] video file and writes the compressed video file at
+     * [destination]
+     *
+     * @param [source] the path of the provided video file to be compressed
+     * @param [destination] the path where the output compressed video file should be saved
+     * @param [quality] to allow choosing a video quality that can be [.low],
+     * [.medium], and [.high]. This defaults to [.medium]
+     * @param [isMinBitRateEnabled] to determine if the checking for a minimum bitrate threshold
+     * before compression is enabled or not. This default to `true`
+     * @param [keepOriginalResolution] to keep the original video height and width when compressing.
+     * This defaults to `false`
+     * @param [progressHandler] a compression progress  listener that listens to compression progress status
+     * @param [completion] to return completion status that can be [onStart], [onSuccess], [onFailure],
+     * and if the compression was [onCancelled]
+     */
     
     func compressVideo(source: URL,
-               destination: URL,
-               quality: VideoQuality,
-               isMinBitRateEnabled: Bool = true,
-               keepOriginalResolution: Bool = false,
-               progressQueue: DispatchQueue,
-               progressHandler: ((Progress) -> ())?,
-               completion: @escaping (CompressionResult) -> ()) -> Compression {
+                       destination: URL,
+                       quality: VideoQuality,
+                       isMinBitRateEnabled: Bool = true,
+                       keepOriginalResolution: Bool = false,
+                       progressQueue: DispatchQueue,
+                       progressHandler: ((Progress) -> ())?,
+                       completion: @escaping (CompressionResult) -> ()) -> Compression {
         
         var frameCount = 0
         let compressionOperation = Compression()

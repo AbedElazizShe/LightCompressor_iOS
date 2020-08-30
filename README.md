@@ -71,5 +71,8 @@ compression.cancel = true
 
 ```
 
+## Compatibility
+The minimum iOS version supported is 11.
+
 ## Getting help
 For questions, suggestions, or anything else, email elaziz.shehadeh(at)gmail.com.

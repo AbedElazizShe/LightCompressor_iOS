@@ -58,7 +58,7 @@ public struct LightCompressor {
      * and if the compression was [onCancelled]
      */
     
-    func compressVideo(source: URL,
+    public func compressVideo(source: URL,
                        destination: URL,
                        quality: VideoQuality,
                        isMinBitRateEnabled: Bool = true,

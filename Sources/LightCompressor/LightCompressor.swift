@@ -1,14 +1,14 @@
 import AVFoundation
 import UIKit
 
-enum VideoQuality {
+public enum VideoQuality {
     case high
     case medium
     case low
 }
 
 // Compression Result
-enum CompressionResult {
+public enum CompressionResult {
     case onStart
     case onSuccess(URL)
     case onFailure(Error)
@@ -16,12 +16,12 @@ enum CompressionResult {
 }
 
 // Compression Interruption Wrapper
-class Compression {
+public class Compression {
     var cancel = false
 }
 
 // Compression Error Messages
-struct CompressionError: LocalizedError {
+public struct CompressionError: LocalizedError {
     let title: String
     let code: Int
     
@@ -31,7 +31,7 @@ struct CompressionError: LocalizedError {
     }
 }
 
-struct LightCompressor {
+public struct LightCompressor {
     
     private let MIN_BITRATE = Float(2000000)
     private let MIN_HEIGHT = 640.0

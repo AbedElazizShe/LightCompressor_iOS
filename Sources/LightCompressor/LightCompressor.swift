@@ -2,16 +2,18 @@ import AVFoundation
 import UIKit
 
 public enum VideoQuality {
+    case very_high
     case high
     case medium
     case low
+    case very_low
 }
 
 // Compression Result
 public enum CompressionResult {
     case onStart
     case onSuccess(URL)
-    case onFailure(Error)
+    case onFailure(CompressionError)
     case onCancelled
 }
 
@@ -25,14 +27,13 @@ public class Compression {
 // Compression Error Messages
 public struct CompressionError: LocalizedError {
     public let title: String
-    public let code: Int
     
-    init(title: String = "Compression Error", code: Int = -1) {
+    init(title: String = "Compression Error") {
         self.title = title
-        self.code = code
     }
 }
 
+@available(iOS 11.0, *)
 public struct LightCompressor {
     
     public init() {}
@@ -47,8 +48,8 @@ public struct LightCompressor {
      *
      * @param [source] the path of the provided video file to be compressed
      * @param [destination] the path where the output compressed video file should be saved
-     * @param [quality] to allow choosing a video quality that can be [.low],
-     * [.medium], and [.high]. This defaults to [.medium]
+     * @param [quality] to allow choosing a video quality that can be [.very_low], [.low],
+     * [.medium],  [.high], and [very_high]. This defaults to [.medium]
      * @param [isMinBitRateEnabled] to determine if the checking for a minimum bitrate threshold
      * before compression is enabled or not. This default to `true`
      * @param [keepOriginalResolution] to keep the original video height and width when compressing.
@@ -59,13 +60,13 @@ public struct LightCompressor {
      */
     
     public func compressVideo(source: URL,
-                       destination: URL,
-                       quality: VideoQuality,
-                       isMinBitRateEnabled: Bool = true,
-                       keepOriginalResolution: Bool = false,
-                       progressQueue: DispatchQueue,
-                       progressHandler: ((Progress) -> ())?,
-                       completion: @escaping (CompressionResult) -> ()) -> Compression {
+                              destination: URL,
+                              quality: VideoQuality,
+                              isMinBitRateEnabled: Bool = true,
+                              keepOriginalResolution: Bool = false,
+                              progressQueue: DispatchQueue,
+                              progressHandler: ((Progress) -> ())?,
+                              completion: @escaping (CompressionResult) -> ()) -> Compression {
         
         var frameCount = 0
         let compressionOperation = Compression()
@@ -126,8 +127,8 @@ public struct LightCompressor {
             videoReader = try AVAssetReader(asset: videoAsset)
         }
         catch {
-            print("video reader error: \(error)")
-            completion(.onFailure(error))
+            let compressionError = CompressionError(title: error.localizedDescription)
+            completion(.onFailure(compressionError))
         }
         
         
@@ -209,12 +210,16 @@ public struct LightCompressor {
     
     private func getBitrate(bitrate: Float, quality: VideoQuality) -> Int {
         
-        if quality == .low {
+        if quality == .very_low {
+            return Int(bitrate * 0.08)
+        } else if quality == .low {
             return Int(bitrate * 0.1)
         } else if quality == .medium {
             return Int(bitrate * 0.2)
         } else if quality == .high {
             return Int(bitrate * 0.3)
+        } else if quality == .very_high {
+            return Int(bitrate * 0.5)
         } else {
             return Int(bitrate * 0.2)
         }
@@ -230,26 +235,31 @@ public struct LightCompressor {
             return (Int(width), Int(height))
         }
         
-        var newWidth: CGFloat
-        var newHeight: CGFloat
+        var newWidth: Int
+        var newHeight: Int
         
         if width >= 1920 || height >= 1920 {
             
-            newWidth = width * 0.5
-            newHeight = height * 0.5
+            newWidth = Int(width * 0.5 / 16) * 16
+            newHeight = Int(height * 0.5 / 16 ) * 16
             
         } else if width >= 1280 || height >= 1280 {
-            newWidth = width * 0.75
-            newHeight = height * 0.75
+            newWidth = Int(width * 0.75 / 16) * 16
+            newHeight = Int(height * 0.75 / 16) * 16
         } else if width >= 960 || height >= 960 {
-            newWidth = CGFloat(MIN_HEIGHT * 0.95)
-            newHeight = CGFloat(MIN_WIDTH * 0.95)
+            if(width > height){
+                newWidth = Int(MIN_HEIGHT * 0.95 / 16) * 16
+                newHeight = Int(MIN_WIDTH * 0.95 / 16) * 16
+            } else {
+                newWidth = Int(MIN_WIDTH * 0.95 / 16) * 16
+                newHeight = Int(MIN_HEIGHT * 0.95 / 16) * 16
+            }
         } else {
-            newWidth = width * 0.9
-            newHeight = height * 0.9
+            newWidth = Int(width * 0.9 / 16) * 16
+            newHeight = Int(height * 0.9 / 16) * 16
         }
         
-        return (Int(newWidth), Int(newHeight))
+        return (newWidth, newHeight)
     }
     
     private func getVideoWriterSettings(bitrate: Int, width: Int, height: Int) -> [String : AnyObject] {

@@ -9,7 +9,7 @@ I would like to mention that the set attributes for size and quality worked just
 ## How it works
 When the video file is called to be compressed, the library checks if the user wants to set a min bitrate to avoid compressing low resolution videos. This becomes handy if you don’t want the video to be compressed every time it is to be processed to avoid having very bad quality after multiple rounds of compression. The minimum bitrate set is 2mbps.
 
-You can pass one of  3 video qualities; `.high`, `.medium`, or `.low` and the package will handle generating the right bitrate and size values for the output video.
+You can pass one of  5 video qualities; `.very_high`, `.high`, `.medium`, `.low` or `.very_low` and the package will handle generating the right bitrate and size values for the output video.
 
 For a sample app, you can have a look at [LightCompressor_iOS_Sample](https://github.com/AbedElazizShe/LightCompressor_iOS_Sample).
 

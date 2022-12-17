@@ -39,22 +39,22 @@ public struct LightCompressor {
         public struct Configuration {
             public let quality: VideoQuality
             public let isMinBitrateCheckEnabled: Bool
-            public let videoBitrate: CGFloat
+            public let videoBitrateInMbps: Int?
             public let disableAudio: Bool
             public let keepOriginalResolution: Bool
-            public let videoSize: CGSize
+            public let videoSize: CGSize?
             
             public init(
                 quality: VideoQuality = .medium,
                 isMinBitrateCheckEnabled: Bool = true,
-                videoBitrate: CGFloat = 3677198,
+                videoBitrateInMbps: Int? = nil,
                 disableAudio: Bool = false,
                 keepOriginalResolution: Bool = false,
-                videoSize: CGSize = CGSize(width: 360, height: 480)
+                videoSize: CGSize? = nil
             ) {
                 self.quality = quality
                 self.isMinBitrateCheckEnabled = isMinBitrateCheckEnabled
-                self.videoBitrate = videoBitrate
+                self.videoBitrateInMbps = videoBitrateInMbps
                 self.disableAudio = disableAudio
                 self.keepOriginalResolution = keepOriginalResolution
                 self.videoSize = videoSize
@@ -82,17 +82,18 @@ public struct LightCompressor {
     private let MIN_WIDTH = 360.0
     
     /**
-     * This function compresses a given [source] video file and writes the compressed video file at
+     * This function compresses a given list of [video]  files and writes the compressed video file at
      * [destination]
      *
-     * @param [source] the path of the provided video file to be compressed
-     * @param [destination] the path where the output compressed video file should be saved
-     * @param [quality] to allow choosing a video quality that can be [.very_low], [.low],
-     * [.medium],  [.high], and [very_high]. This defaults to [.medium]
-     * @param [isMinBitRateEnabled] to determine if the checking for a minimum bitrate threshold
-     * before compression is enabled or not. This default to `true`
-     * @param [keepOriginalResolution] to keep the original video height and width when compressing.
-     * This defaults to `false`
+     * @param [videos] the list of videos  to be compressed. Each video object should have [source], [destination], and an optional [configuration] where:
+     * - [source] is the source path of the video
+     * - [destination] the path where the output compressed video file should be saved
+     * - [configuration] is the custom configuration to control compression parameters for the video to be compressed. The configurations include:
+     *      -  [quality] to allow choosing a video quality that can be [.very_low], [.low], [.medium],  [.high], and [very_high]. This defaults to [.medium]
+     *      - [isMinBitrateCheckEnabled] to determine if the checking for a minimum bitrate threshold before compression is enabled or not. This default to `true`
+     *      - [videoBitrateInMbps] which is a custom bitrate for the video
+     *      - [keepOriginalResolution] to keep the original video height and width when compressing. This defaults to `false`
+     *      - [VideoSize] which is a custom height and width for the video
      * @param [progressHandler] a compression progress  listener that listens to compression progress status
      * @param [completion] to return completion status that can be [onStart], [onSuccess], [onFailure],
      * and if the compression was [onCancelled]
@@ -134,11 +135,16 @@ public struct LightCompressor {
             }
             
             // Generate a bitrate based on desired quality
-            let newBitrate = getBitrate(bitrate: bitrate, quality: configuration.quality)
+            let newBitrate = configuration.videoBitrateInMbps == nil ?
+            getBitrate(bitrate: bitrate, quality: configuration.quality) :
+            configuration.videoBitrateInMbps! * 1000000
             
             // Handle new width and height values
             let videoSize = videoTrack.naturalSize
-            let size = generateWidthAndHeight(width: videoSize.width, height: videoSize.height, keepOriginalResolution: configuration.keepOriginalResolution)
+            let size: (width: Int, height: Int) = configuration.videoSize == nil ?
+            generateWidthAndHeight(width: videoSize.width, height: videoSize.height, keepOriginalResolution: configuration.keepOriginalResolution)
+            : (Int(configuration.videoSize!.width), Int(configuration.videoSize!.height))
+            
             let newWidth = size.width
             let newHeight = size.height
             
@@ -264,15 +270,15 @@ public struct LightCompressor {
     private func getBitrate(bitrate: Float, quality: VideoQuality) -> Int {
         switch quality {
         case .very_high:
-            return Int(bitrate * 0.5)
+            return Int(bitrate * 0.6)
         case .high:
-            return Int(bitrate * 0.3)
+            return Int(bitrate * 0.4)
         case .medium:
-            return Int(bitrate * 0.2)
+            return Int(bitrate * 0.3)
         case .low:
-            return Int(bitrate * 0.1)
+            return Int(bitrate * 0.2)
         case .very_low:
-            return Int(bitrate * 0.08)
+            return Int(bitrate * 0.1)
         }
     }
     

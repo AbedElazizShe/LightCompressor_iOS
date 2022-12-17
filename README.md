@@ -11,7 +11,6 @@ When the video file is called to be compressed, the library checks if the user w
 
 You can pass one of  5 video qualities; `.very_high`, `.high`, `.medium`, `.low` or `.very_low` and the package will handle generating the right bitrate and size values for the output video.
 
-For a sample app, you can have a look at [LightCompressor_iOS_Sample](https://github.com/AbedElazizShe/LightCompressor_iOS_Sample).
 
 Usage
 --------
@@ -21,15 +20,34 @@ To import this swift package to your XCode project follow the following;
 - Specifiy the minimum release version and confirm. The project will be imported and you can start using it.
 - In case on a new release update, you can choose File -> Swift packages and then click on `Update to latest package version`.
 
-In order to use the compressor, just call [compressVideo()] and pass both source and destination file paths. The method has a callback for 5 functions;
+In order to use the compressor, just call [compressVideo()] and pass the following:
+
+- A list of videos to be compressed where each video contains:
+    - source: which is the source path of the input video. **required**
+    - destination: which is the path where the output video should be saved. **required**
+    - configuration: a set of configurations to control video compression - see configuration below. **optional**
+    
+- Callbacks: the method has a callback for 5 functions;
 1) onStart - called when compression started.
 2) onSuccess - called when compression completed with no errors/exceptions.
 3) onFailure - called when an exception occurred or video bitrate and size are below the minimum required for compression.
 4) onProgress - called with progress new value.
 5) onCancelled - called when the job is cancelled.
 
-In addition, you can pass the video quality (default is medium)  to enable checking for min bitrate (default is true), and if you wish to keep the
-original video width and height from being changed during compression, you can pass true or false for keepOriginalResolution where default is false.
+### Configuration
+
+- VideoQuality: VERY_HIGH (original-bitrate * 0.6) , HIGH (original-bitrate * 0.4), MEDIUM (original-bitrate * 0.3), LOW (original-bitrate * 0.2), OR VERY_LOW (original-bitrate * 0.1) - .medium by default.
+
+- isMinBitrateCheckEnabled: this means, don't compress if bitrate is less than 2mbps - true by default.
+
+- videoBitrateInMbps: any custom bitrate value in Mbps - nil by default.
+
+- disableAudio: true/false to generate a video without audio - false by default.
+
+- keepOriginalResolution: true/false to tell the library not to change the resolution - false by default.
+
+- videoSize: it contains; videoWidth: custom video width, and videoHeight: custom video height - nil by default
+
 
 #### Example
 
@@ -39,34 +57,44 @@ import LightCompressor
 
 let videoCompressor = LightCompressor()
  
-let compression: Compression = videoCompressor.compressVideo(
-                                source: videoToCompress,
-                                destination: destinationPath as URL,
-                                quality: .medium,
-                                isMinBitRateEnabled: true,
-                                keepOriginalResolution: false,
-                                progressQueue: .main,
-                                progressHandler: { progress in
-                                    // progress
-                                },                                            
-                                completion: {[weak self] result in
-                                    guard let `self` = self else { return }
-                                             
-                                    switch result {                                                 
-                                    case .onSuccess(let path):
-                                        // success 
-                                                 
-                                    case .onStart:
-                                        // when compression starts
-                                                 
-                                    case .onFailure(let error):
-                                        // failure error 
-                                                 
-                                    case .onCancelled:
-                                        // if cancelled
-                                    }
-                                }
- )
+compression = videoCompressor.compressVideo(videos: [
+    .init(
+        source: videoToCompress, 
+        destination: destinationPath, 
+        configuration: .init(
+            quality: VideoQuality.very_high, 
+            videoBitrateInMbps: 5, 
+            disableAudio: false, 
+            keepOriginalResolution: 
+            false, videoSize: 
+            CGSize(width: 360, height: 480) 
+            )
+        )
+    ],
+    progressQueue: .main,
+    progressHandler: { progress in
+                    DispatchQueue.main.async { [unowned self] in
+                       // Handle progress- "\(String(format: "%.0f", progress.fractionCompleted * 100))%"                            
+                    }},
+                                                   
+    completion: {[weak self] result in
+                    guard let `self` = self else { return }
+                                                    
+                    switch result {
+                                                        
+                    case .onSuccess(let index, let path):
+                        // Handle onSuccess
+                                                        
+                    case .onStart:
+                        // Handle onStart                              
+                                                        
+                    case .onFailure(let index, let error):
+                        // Handle onFailure                
+                                                        
+                    case .onCancelled:
+                        // Handle onCancelled                          
+                    }
+})
 
 // to cancel call
 compression.cancel = true
@@ -74,7 +102,7 @@ compression.cancel = true
 ```
 
 ## Compatibility
-The minimum iOS version supported is 11.
+The minimum iOS version supported is 14.
 
 ## Getting help
 For questions, suggestions, or anything else, email elaziz.shehadeh(at)gmail.com.

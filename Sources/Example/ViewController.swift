@@ -60,7 +60,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         let startingPoint = Date()
         let videoCompressor = LightCompressor()
         
-        compression = videoCompressor.compressVideo(videos: [.init(source: videoToCompress, destination: destinationPath)],
+        compression = videoCompressor.compressVideo(videos: [.init(source: videoToCompress, destination: destinationPath, configuration: .init(quality: VideoQuality.very_high, videoBitrateInMbps: 5, disableAudio: false, keepOriginalResolution: false, videoSize: CGSize(width: 360, height: 480) ))],
                                                    progressQueue: .main,
                                                    progressHandler: { progress in
                                                     DispatchQueue.main.async { [unowned self] in

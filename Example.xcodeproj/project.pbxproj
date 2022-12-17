@@ -17,7 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		34C5E5B0286D3D0800DC3F2E /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		34C5E5B0286D3D0800DC3F2E /* Example */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Example; path = ../../../../../../../../AndroidStudioProjects/LightCompressor_iOS/Sources/Example; sourceTree = BUILT_PRODUCTS_DIR; };
 		34C5E5B3286D3D0800DC3F2E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		34C5E5B5286D3D0800DC3F2E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		34C5E5B7286D3D0800DC3F2E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -25,7 +25,7 @@
 		34C5E5BC286D3D0900DC3F2E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		34C5E5BF286D3D0900DC3F2E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		34C5E5C1286D3D0900DC3F2E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		34C5E5C8286D3D8D00DC3F2E /* LightCompressor_iOS */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = LightCompressor_iOS; path = /Users/hasanabuzayed/Development/iOS_Workspace/LightCompressor_iOS; sourceTree = "<absolute>"; };
+		34C5E5C8286D3D8D00DC3F2E /*  */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ""; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,7 +60,7 @@
 		34C5E5B1286D3D0800DC3F2E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				34C5E5B0286D3D0800DC3F2E /* Example.app */,
+				34C5E5B0286D3D0800DC3F2E /* Example */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -83,7 +83,7 @@
 		34C5E5C7286D3D8D00DC3F2E /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				34C5E5C8286D3D8D00DC3F2E /* LightCompressor_iOS */,
+				34C5E5C8286D3D8D00DC3F2E /*  */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -108,7 +108,7 @@
 				341B8CB1286D3FE0005A6252 /* LightCompressor */,
 			);
 			productName = Example;
-			productReference = 34C5E5B0286D3D0800DC3F2E /* Example.app */;
+			productReference = 34C5E5B0286D3D0800DC3F2E /* Example */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */

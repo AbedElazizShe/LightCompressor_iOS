@@ -21,5 +21,7 @@
 			</array>
 		</dict>
 	</dict>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>${PRODUCT_MODULE_NAME} library Usage</string>
 </dict>
 </plist>
